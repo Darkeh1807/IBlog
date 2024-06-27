@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         const hashedPassword = await bcrypt.hash(password, salt);
 
 
-        const uRole = role || "USER";
+        const uRole = role || "USER"; //Default to 'USER'
 
         const user = new User({
             name, email, password: hashedPassword, role: uRole,

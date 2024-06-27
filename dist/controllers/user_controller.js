@@ -57,7 +57,7 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         }
         const salt = yield bcrypt.genSalt(10);
         const hashedPassword = yield bcrypt.hash(password, salt);
-        const uRole = role || "USER";
+        const uRole = role || "USER"; //Default to 'USER'
         const user = new user_1.User({
             name, email, password: hashedPassword, role: uRole,
         });

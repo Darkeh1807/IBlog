@@ -5,7 +5,7 @@ import { verifyAccessToken } from "../middlewares/verification";
 
 export const blogRouter = Router();
 
-blogRouter.post("/", createBlog);
+blogRouter.post("/", verifyAccessToken, createBlog);
 blogRouter.get("/", getBlogs);
-blogRouter.put("/", updateBlog);
+blogRouter.put("/", verifyAccessToken, updateBlog);
 

@@ -6,6 +6,7 @@ import { User } from "../models/user";
 import * as jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import consola from "consola";
+import { bcryptImpl } from "../utils/bcrypt";
 
 config()
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,8 +27,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
             return res.status(400).json(new IResponse("error", "User already exists"));
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        //Hash Password
+        const hashedPassword = await bcryptImpl.hashPassword(password);
 
 
         const uRole = role || "USER"; //Default to 'USER'
@@ -64,7 +65,7 @@ export const signInUser = async (req: Request, res: Response, next: NextFunction
             return res.status(400).json(new IResponse("error", "User not found"))
         }
 
-        const isPassMatch = await bcrypt.compare(password, existingUser.password);
+        const isPassMatch = await bcryptImpl.compare(password, existingUser.password);
 
         if (!isPassMatch) {
             return res.status(400).json(new IResponse("error", "Invalid user credentials"))

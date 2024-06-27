@@ -19,6 +19,8 @@ const blogSchema = new Schema<IBlogSchema>({
         ref: 'User',
         required: true,
     },
+},{
+    timestamps:true
 });
 
 

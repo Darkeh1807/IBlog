@@ -63,7 +63,32 @@ const getBlogs = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 exports.getBlogs = getBlogs;
 const getSingleBlog = () => { };
 exports.getSingleBlog = getSingleBlog;
-const updateBlog = () => { };
+const updateBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { blogId, title, description, userId } = req.body;
+    if (!blogId || !userId) {
+        return res.status(400).json(new response_1.default("error", "Make sure Blog id and User id are provided"));
+    }
+    if (!title && !description) {
+        return res.status(400).json(new response_1.default("error", "Title or description is required"));
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json(new response_1.default("error", "Invalid user ID"));
+    }
+    try {
+        const blog = yield blog_1.Blog.findById(blogId);
+        if ((blog === null || blog === void 0 ? void 0 : blog.createdBy.toString()) !== userId) {
+            return res.status(400).json(new response_1.default("error", "You aren't authorized to delete this blog"));
+        }
+        const updatedBlog = yield blog_1.Blog.findByIdAndUpdate(blogId, { title, description }, { new: true, runValidators: true });
+        if (!updatedBlog) {
+            return res.status(404).json(new response_1.default("error", "Blog bot found"));
+        }
+        return res.status(200).json(new response_1.default("success", "Blog updated successfully", updatedBlog));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.updateBlog = updateBlog;
 const deleteBlog = () => { };
 exports.deleteBlog = deleteBlog;

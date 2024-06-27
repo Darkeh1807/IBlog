@@ -6,3 +6,4 @@ const blog_controller_1 = require("../controllers/blog_controller");
 exports.blogRouter = (0, express_1.Router)();
 exports.blogRouter.post("/", blog_controller_1.createBlog);
 exports.blogRouter.get("/", blog_controller_1.getBlogs);
+exports.blogRouter.put("/", blog_controller_1.updateBlog);

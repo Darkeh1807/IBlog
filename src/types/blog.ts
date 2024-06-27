@@ -13,3 +13,10 @@ export interface ICreateBlogInput {
     createdBy: string,
 }
 
+export interface IUpdateBlogInput{
+    blogId:string,
+    title:string,
+    description:string,
+    userId :string,
+}
+

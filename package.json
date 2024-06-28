@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "For the interview",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node dist/main.js",
     "build": "tsc",

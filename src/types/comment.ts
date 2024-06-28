@@ -8,7 +8,9 @@ export interface ICommentSchema {
 }
 
 export interface ICreateCommentInput {
-
+    userId: mongoose.Types.ObjectId,
+    blogId: mongoose.Types.ObjectId,
+    content: string,
 }
 
 

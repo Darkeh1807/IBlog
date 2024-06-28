@@ -37,10 +37,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserAccount = exports.getsingleUser = exports.getUsers = exports.signInUser = exports.createUser = void 0;
 const response_1 = __importDefault(require("../types/response"));
-const bcrypt = __importStar(require("bcrypt"));
 const user_1 = require("../models/user");
 const jwt = __importStar(require("jsonwebtoken"));
 const dotenv_1 = require("dotenv");
+const bcrypt_1 = require("../utils/bcrypt");
 (0, dotenv_1.config)();
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, role } = req.body;
@@ -55,8 +55,8 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         if (existingUser != null) {
             return res.status(400).json(new response_1.default("error", "User already exists"));
         }
-        const salt = yield bcrypt.genSalt(10);
-        const hashedPassword = yield bcrypt.hash(password, salt);
+        //Hash Password
+        const hashedPassword = yield bcrypt_1.bcryptImpl.hashPassword(password);
         const uRole = role || "USER"; //Default to 'USER'
         const user = new user_1.User({
             name, email, password: hashedPassword, role: uRole,
@@ -80,7 +80,7 @@ const signInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         if (existingUser === null) {
             return res.status(400).json(new response_1.default("error", "User not found"));
         }
-        const isPassMatch = yield bcrypt.compare(password, existingUser.password);
+        const isPassMatch = yield bcrypt_1.bcryptImpl.compare(password, existingUser.password);
         if (!isPassMatch) {
             return res.status(400).json(new response_1.default("error", "Invalid user credentials"));
         }

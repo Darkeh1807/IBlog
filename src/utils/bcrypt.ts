@@ -8,7 +8,7 @@ abstract class Bcrypt {
 
 class BcryptImpl extends Bcrypt {
     async hashPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt(10);
+        const salt:string = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         return hashedPassword;
     }
@@ -20,3 +20,6 @@ class BcryptImpl extends Bcrypt {
 }
 
 export const bcryptImpl = new BcryptImpl();
+
+
+

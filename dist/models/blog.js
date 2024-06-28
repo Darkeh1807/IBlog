@@ -20,6 +20,8 @@ const blogSchema = new mongoose_1.Schema({
         ref: 'User',
         required: true,
     },
+}, {
+    timestamps: true
 });
 blogSchema.plugin(mongoose_paginate_v2_1.default);
 const Blog = (0, mongoose_1.model)('Blog', blogSchema);

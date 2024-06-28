@@ -29,7 +29,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3",
-    "mongoose-paginate-v2": "^1.8.2"
+    "mongoose-paginate-v2": "^1.8.2",
+    "typescript": "^5.5.2"
   },
   "nodemonConfig": {
     "watch": [

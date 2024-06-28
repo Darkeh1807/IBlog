@@ -1,4 +1,4 @@
-//Custome response
+//Custom response
 
 class IResponse {
     readonly status: string;
@@ -12,9 +12,6 @@ class IResponse {
         this.data = data
         this.token = token;
     }
-
-
-
 }
 
 

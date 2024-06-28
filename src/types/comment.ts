@@ -1,16 +1,13 @@
-import mongoose from "mongoose";
+import { Document, Types } from "mongoose";
 
-export interface ICommentSchema {
-    content: string,
-    commentedBy: mongoose.Types.ObjectId,
-    blog: mongoose.Types.ObjectId,
-
+export interface ICommentSchema extends Document {
+    content: string;
+    commentedBy: Types.ObjectId;
+    blog: Types.ObjectId;
 }
 
 export interface ICreateCommentInput {
-    userId: mongoose.Types.ObjectId,
-    blogId: mongoose.Types.ObjectId,
-    content: string,
+    userId: Types.ObjectId;
+    blogId: Types.ObjectId;
+    content: string;
 }
-
-

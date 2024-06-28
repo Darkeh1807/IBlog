@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, query, Request, Response } from "express"
 import { ICreateUserInput, ISignUserInput, IUserSchema } from "../types/user";
 import IResponse from "../types/response";
 import * as bcrypt from 'bcrypt';
@@ -17,7 +17,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     }
 
     if (role !== undefined && role !== "ADMIN") {
-        return res.status(400).json(new IResponse("error", "role field must be 'ADMIN', Default:'USER'"));
+        return res.status(400).json(new IResponse("error", "role field must be 'ADMIN', if not specified, will be default to 'USER'"));
     }
 
     try {
@@ -62,7 +62,7 @@ export const signInUser = async (req: Request, res: Response, next: NextFunction
         const existingUser = await User.findOne({ email })
 
         if (existingUser === null) {
-            return res.status(400).json(new IResponse("error", "User not found"))
+            return res.status(404).json(new IResponse("error", "User not found"))
         }
 
         const isPassMatch = await bcryptImpl.compare(password, existingUser.password);
@@ -88,7 +88,35 @@ export const signInUser = async (req: Request, res: Response, next: NextFunction
 
 }
 
-export const getUsers = () => { }
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const { adminId } = req.query;
+
+    if (!adminId) {
+        return res.status(400).json(new IResponse("error", "Admin ID is required"));
+    }
+
+    try {
+
+        const admin = await User.findById(adminId);
+        if (!admin) {
+            return res.status(404).json(new IResponse("error", "Admin does not exist"));
+        }
+
+        if (admin.role !== "ADMIN") {
+            return res.status(401).json(new IResponse("error", "You aren't authorized for to this resource"));
+        }
+
+
+        const users = await User.find();
+        return res.status(200).json(new IResponse("success", "Users returned", users))
+
+
+    } catch (error) {
+        next(error);
+    }
+
+
+}
 
 export const getsingleUser = () => { }
 

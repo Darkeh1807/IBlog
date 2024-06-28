@@ -50,6 +50,8 @@
 <p>npm start</p>
 
 <h4>API Documentation</h4>
+
+<!-- User Routes -->
 <h6>User Routes</h6>
 
 <h6>Register a User</h6>
@@ -76,5 +78,20 @@
   "password": "yourpassword"
 }<br>
 </ul>
+
+<h6>Blog Routes</h6>
+<h6>Create Blog(Admin)</h6>
+<ul>
+  <li>URL: '/api/users/blog'</li>
+  <li>Method: 'POST'</li>
+  <li>Request Body</li>
+{
+  "title": "Example blog title",
+  "description": "Example blog content ",
+  "createdBy": "admin ID",
+}
+</ul>
+
+
 
 

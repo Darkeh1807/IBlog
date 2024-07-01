@@ -18,3 +18,8 @@ export interface IUpdateBlogInput {
     description: string;
     userId: string;
 }
+
+export interface IDeleteBlogInput {
+    blogId: string,
+    userId: string,
+}

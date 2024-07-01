@@ -61,7 +61,25 @@ const getBlogs = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getBlogs = getBlogs;
-const getSingleBlog = () => { };
+const getSingleBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { blogId } = req.params;
+        if (!blogId) {
+            return res.status(400).json(new response_1.default("error", "Make sure Blog id is provided"));
+        }
+        if (!mongoose_1.Types.ObjectId.isValid(blogId)) {
+            return res.status(400).json(new response_1.default("error", "Invalid user ID"));
+        }
+        const blog = yield blog_1.Blog.findById(blogId);
+        if (!blog) {
+            return res.status(400).json(new response_1.default("error", "No blog found with that id"));
+        }
+        return res.status(200).json(new response_1.default("success", "Blog retrieved successfully", blog));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.getSingleBlog = getSingleBlog;
 const updateBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { blogId, title, description, userId } = req.body;
@@ -77,7 +95,7 @@ const updateBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     try {
         const blog = yield blog_1.Blog.findById(blogId);
         if ((blog === null || blog === void 0 ? void 0 : blog.createdBy.toString()) !== userId) {
-            return res.status(400).json(new response_1.default("error", "You aren't authorized to delete this blog"));
+            return res.status(400).json(new response_1.default("error", "You aren't authorized to update this blog"));
         }
         const updatedBlog = yield blog_1.Blog.findByIdAndUpdate(blogId, { title, description }, { new: true, runValidators: true });
         if (!updatedBlog) {
@@ -90,5 +108,19 @@ const updateBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.updateBlog = updateBlog;
-const deleteBlog = () => { };
+const deleteBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { blogId, userId } = req.query;
+    if (!blogId || !userId) {
+        return res.status(400).json(new response_1.default("error", "BlogId and UserId are required"));
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(blogId) || !mongoose_1.Types.ObjectId.isValid(userId))
+        return res.status(400).json(new response_1.default("error", "Make sure userId or blogId is valid"));
+    try {
+        const user = yield user_1.User.findById(userId);
+        if (!user)
+            return res.status(404).json(new response_1.default("error", "User not found"));
+    }
+    catch (error) {
+    }
+});
 exports.deleteBlog = deleteBlog;

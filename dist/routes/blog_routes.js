@@ -8,3 +8,5 @@ exports.blogRouter = (0, express_1.Router)();
 exports.blogRouter.post("/", verification_1.verifyAccessToken, blog_controller_1.createBlog);
 exports.blogRouter.get("/", blog_controller_1.getBlogs);
 exports.blogRouter.put("/", verification_1.verifyAccessToken, blog_controller_1.updateBlog);
+exports.blogRouter.get("/:blogId", blog_controller_1.getSingleBlog);
+exports.blogRouter.delete("/", verification_1.verifyAccessToken, blog_controller_1.deleteBlog);

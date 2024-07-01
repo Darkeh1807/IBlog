@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express"
-import { IBlogSchema, IUpdateBlogInput } from "../types/blog"
+import { IBlogSchema, IDeleteBlogInput, IUpdateBlogInput } from "../types/blog"
 import IResponse from "../types/response";
 import { User } from "../models/user";
 import { Blog } from "../models/blog";
-import { IUserSchema } from "../types/user";
 import { Types } from "mongoose";
 
 
@@ -61,7 +60,28 @@ export const getBlogs = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export const getSingleBlog = () => { }
+export const getSingleBlog = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { blogId } = req.params;
+
+        if (!blogId) {
+            return res.status(400).json(new IResponse("error", "Make sure Blog id is provided"));
+        }
+
+
+        if (!Types.ObjectId.isValid(blogId)) {
+            return res.status(400).json(new IResponse("error", "Invalid user ID"));
+        }
+        const blog = await Blog.findById(blogId);
+        if (!blog) {
+            return res.status(400).json(new IResponse("error", "No blog found with that id"));
+        }
+
+        return res.status(200).json(new IResponse("success", "Blog retrieved successfully", blog));
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
     const { blogId, title, description, userId }: IUpdateBlogInput = req.body;
@@ -79,7 +99,7 @@ export const updateBlog = async (req: Request, res: Response, next: NextFunction
     try {
         const blog = await Blog.findById(blogId);
         if (blog?.createdBy.toString() !== userId) {
-            return res.status(400).json(new IResponse("error", "You aren't authorized to delete this blog"));
+            return res.status(400).json(new IResponse("error", "You aren't authorized to update this blog"));
         }
         const updatedBlog = await Blog.findByIdAndUpdate(blogId, { title, description }, { new: true, runValidators: true });
 
@@ -92,4 +112,22 @@ export const updateBlog = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-export const deleteBlog = () => { }
+export const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
+
+    const { blogId, userId } = req.query;
+
+    if (!blogId || !userId) {
+        return res.status(400).json(new IResponse("error", "BlogId and UserId are required"));
+    }
+
+    if (!Types.ObjectId.isValid(blogId as string) || !Types.ObjectId.isValid(userId as string)) return res.status(400).json(new IResponse("error", "Make sure userId or blogId is valid"))
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json(new IResponse("error", "User not found"));
+
+
+    } catch (error) {
+
+    }
+}

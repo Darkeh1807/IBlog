@@ -6,6 +6,7 @@ import { userRouter } from "./routes/user_routes";
 import { blogRouter } from "./routes/blog_routes";
 import { commentRouter } from "./routes/comment_routes";
 import IResponse from "./types/response";
+import { notFoundErrorHandler, errorHandler } from "./middlewares/error_handler";
 
 
 config()
@@ -23,17 +24,8 @@ app.use("/api/blog", blogRouter);
 app.use("/api/comment", commentRouter);
 
 
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-
-    if (res.headersSent) {
-        return next(error);
-    }
-
-    const statusCode = error.status || 500;
-    res.status(statusCode);
-
-    return res.json(new IResponse("error", error.message));
-});
+app.use(notFoundErrorHandler);
+app.use(errorHandler);
 
 
 export const serve = dbConnection.then(() => {

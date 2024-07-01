@@ -48,7 +48,7 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         return res.status(400).json(new response_1.default("error", "Make sure all fields are correct"));
     }
     if (role !== undefined && role !== "ADMIN") {
-        return res.status(400).json(new response_1.default("error", "role field must be 'ADMIN', Default:'USER'"));
+        return res.status(400).json(new response_1.default("error", "role field must be 'ADMIN', if not specified, will be default to 'USER'"));
     }
     try {
         const existingUser = yield user_1.User.findOne({ email });
@@ -78,7 +78,7 @@ const signInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     try {
         const existingUser = yield user_1.User.findOne({ email });
         if (existingUser === null) {
-            return res.status(400).json(new response_1.default("error", "User not found"));
+            return res.status(404).json(new response_1.default("error", "User not found"));
         }
         const isPassMatch = yield bcrypt_1.bcryptImpl.compare(password, existingUser.password);
         if (!isPassMatch) {
@@ -95,7 +95,26 @@ const signInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.signInUser = signInUser;
-const getUsers = () => { };
+const getUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { adminId } = req.query;
+    if (!adminId) {
+        return res.status(400).json(new response_1.default("error", "Admin ID is required"));
+    }
+    try {
+        const admin = yield user_1.User.findById(adminId);
+        if (!admin) {
+            return res.status(404).json(new response_1.default("error", "Admin does not exist"));
+        }
+        if (admin.role !== "ADMIN") {
+            return res.status(401).json(new response_1.default("error", "You aren't authorized for to this resource"));
+        }
+        const users = yield user_1.User.find();
+        return res.status(200).json(new response_1.default("success", "Users returned", users));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.getUsers = getUsers;
 const getsingleUser = () => { };
 exports.getsingleUser = getsingleUser;

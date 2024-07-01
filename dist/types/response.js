@@ -1,5 +1,5 @@
 "use strict";
-//Custome response
+//Custom response
 Object.defineProperty(exports, "__esModule", { value: true });
 class IResponse {
     constructor(status, message, data, token) {

@@ -10,6 +10,7 @@ import { Comment } from "../models/comment";
 
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
     const { userId, blogId, content }: ICreateCommentInput = req.body;
+ 
 
     if (!userId || !blogId || !content) {
         return res.status(400).json(new IResponse("error", "Make sure all fields are correct"));

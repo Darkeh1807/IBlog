@@ -2,7 +2,7 @@
 import { serve } from "./serve";
 
 const start = () => {
-    serve
+    serve.then()
 }
 
 start();

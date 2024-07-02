@@ -6,7 +6,6 @@ const UserSchema = new Schema<IUserSchema>({
         type: SchemaTypes.String,
         required: true,
     },
-
     email: {
         type: SchemaTypes.String,
         required: true,

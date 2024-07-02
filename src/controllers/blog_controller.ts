@@ -4,6 +4,7 @@ import IResponse from "../types/response";
 import { User } from "../models/user";
 import { Blog } from "../models/blog";
 import { Types } from "mongoose";
+import consola from "consola";
 
 
 
@@ -11,6 +12,7 @@ import { Types } from "mongoose";
 
 export const createBlog = async (req: Request, res: Response, next: NextFunction) => {
     const { title, description, createdBy }: IBlogSchema = req.body;
+
 
     if (!title || !description || !createdBy) {
         return res.status(400).json(new IResponse("error", "Make sure all fields are correct"));
@@ -63,6 +65,7 @@ export const getBlogs = async (req: Request, res: Response, next: NextFunction) 
 export const getSingleBlog = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { blogId } = req.params;
+        consola.info(req.user);
 
         if (!blogId) {
             return res.status(400).json(new IResponse("error", "Make sure Blog id is provided"));

@@ -4,10 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 config();
 
-//Including user property to request
-interface customRequest extends Request {
-    user: any;
-}
+
 
 export const verifyAccessToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.header("authorization")?.split(" ")[1];
@@ -18,8 +15,9 @@ export const verifyAccessToken = (req: Request, res: Response, next: NextFunctio
     try {
         const secret = process.env.JWTSECRET as Secret;
         const decoded = jwt.verify(token, secret);
-        (req as customRequest).user = decoded;
-        next();
+        req.user = decoded;
+
+        next(decoded);
     } catch (error) {
         return res.status(500).send("Invalid token");
     }

@@ -17,7 +17,7 @@ const verifyAccessToken = (req, res, next) => {
         const secret = process.env.JWTSECRET;
         const decoded = jsonwebtoken_1.default.verify(token, secret);
         req.user = decoded;
-        next();
+        next(decoded);
     }
     catch (error) {
         return res.status(500).send("Invalid token");

@@ -17,6 +17,7 @@ const response_1 = __importDefault(require("../types/response"));
 const user_1 = require("../models/user");
 const blog_1 = require("../models/blog");
 const mongoose_1 = require("mongoose");
+const consola_1 = __importDefault(require("consola"));
 const createBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, createdBy } = req.body;
     if (!title || !description || !createdBy) {
@@ -64,6 +65,7 @@ exports.getBlogs = getBlogs;
 const getSingleBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { blogId } = req.params;
+        consola_1.default.info(req.user);
         if (!blogId) {
             return res.status(400).json(new response_1.default("error", "Make sure Blog id is provided"));
         }

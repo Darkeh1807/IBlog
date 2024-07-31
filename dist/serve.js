@@ -11,7 +11,7 @@ const consola_1 = __importDefault(require("consola"));
 const error_handler_1 = require("./middlewares/error_handler");
 const main_route_1 = require("./routes/main_route");
 (0, dotenv_1.config)();
-const PORT = 3500 || process.env.PORT;
+const PORT = process.env.PORT || 2000;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(main_route_1.router);

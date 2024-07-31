@@ -31,6 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -62,7 +73,8 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             name, email, password: hashedPassword, role: uRole,
         });
         const savedUser = yield user.save();
-        return res.status(201).json(new response_1.default("success", "User saved successfully", savedUser));
+        const _a = savedUser.toObject(), { password: _ } = _a, sUser = __rest(_a, ["password"]);
+        return res.status(201).json(new response_1.default("success", "User saved successfully", sUser));
     }
     catch (error) {
         next(error);
@@ -88,7 +100,8 @@ const signInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         const payload = { email: existingUser.email, password: password, uRole };
         const secret = (_a = process.env.JWTSECRET) !== null && _a !== void 0 ? _a : "";
         const token = jwt.sign(payload, secret, { expiresIn: "24h" });
-        return res.header({ token: token }).status(200).json(new response_1.default("success", "sign in success", existingUser, token));
+        const _b = existingUser.toObject(), { password: _ } = _b, user = __rest(_b, ["password"]);
+        return res.header({ token: token }).status(200).json(new response_1.default("success", "sign in success", user, token));
     }
     catch (error) {
         next(error);
@@ -108,8 +121,8 @@ const getUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         if (admin.role !== "ADMIN") {
             return res.status(401).json(new response_1.default("error", "You aren't authorized for to this resource"));
         }
-        const users = yield user_1.User.find();
-        return res.status(200).json(new response_1.default("success", "Users returned", users));
+        const allUsers = yield user_1.User.find({}).select("-password");
+        return res.status(200).json(new response_1.default("success", "Users returned", allUsers));
     }
     catch (error) {
         next(error);

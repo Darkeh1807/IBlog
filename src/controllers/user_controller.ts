@@ -9,6 +9,7 @@ import consola from "consola";
 import { bcryptImpl } from "../utils/bcrypt";
 
 config()
+
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password, role }: ICreateUserInput = req.body;
 
@@ -39,8 +40,9 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
         const savedUser = await user.save();
 
+        const { password: _, ...sUser } = savedUser.toObject();
 
-        return res.status(201).json(new IResponse("success", "User saved successfully", savedUser));
+        return res.status(201).json(new IResponse("success", "User saved successfully", sUser));
     } catch (error) {
         next(error);
     }
@@ -59,7 +61,7 @@ export const signInUser = async (req: Request, res: Response, next: NextFunction
     }
 
     try {
-        const existingUser = await User.findOne({ email })
+        const existingUser = await User.findOne({ email });
 
         if (existingUser === null) {
             return res.status(404).json(new IResponse("error", "User not found"))
@@ -78,7 +80,9 @@ export const signInUser = async (req: Request, res: Response, next: NextFunction
 
         const token = jwt.sign(payload, secret, { expiresIn: "24h" });
 
-        return res.header({ token: token }).status(200).json(new IResponse("success", "sign in success", existingUser, token));
+        const { password: _, ...user } = existingUser.toObject();
+
+        return res.header({ token: token }).status(200).json(new IResponse("success", "sign in success", user, token));
 
 
     } catch (error) {
@@ -107,8 +111,9 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
         }
 
 
-        const users = await User.find();
-        return res.status(200).json(new IResponse("success", "Users returned", users))
+        const allUsers = await User.find({}).select("-password");
+
+        return res.status(200).json(new IResponse("success", "Users returned", allUsers))
 
 
     } catch (error) {

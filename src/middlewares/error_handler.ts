@@ -10,21 +10,21 @@ class NotFoundError extends Error {
     }
 }
 
- const notFoundErrorHandler = (req: Request, res: Response, next: NextFunction) => {
+const notFoundErrorHandler = (req: Request, res: Response, next: NextFunction) => {
     const notFound = new NotFoundError("Not Found");
     next(notFound);
 };
 
- const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
     if (res.headersSent) {
         return next(error);
     }
 
-    const statusCode = (error as any).status || 500; // Ensure status is a number
+    const statusCode = (error as NotFoundError).status || 500; // Ensure status is a number
 
 
     res.status(statusCode).json(new IResponse(`${error.name}`, `${error.message}`));
 };
 
 
-export {notFoundErrorHandler, errorHandler}
+export { notFoundErrorHandler, errorHandler }

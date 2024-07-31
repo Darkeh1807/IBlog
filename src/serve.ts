@@ -8,7 +8,7 @@ import { router } from "./routes/main_route";
 
 config()
 
-const PORT = 3500 || process.env.PORT;
+const PORT = process.env.PORT || 2000;
 
 const app = express()
 
